@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header>
+    <h1>Shopping Cart</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <h2>Cart</h2>
+    <ul id="cart-items">
+      <!-- Cart items will be dynamically added here -->
+    </ul>
+    <p>Total: $<span id="cart-total">0.00</span></p>
+    <a href="checkout.html"><button id="checkout-btn">Checkout</button></a>
+  </main>
+  
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    let cartItems = document.getElementById("cart-items");
+    let cartTotal = document.getElementById("cart-total");
+    let checkoutBtn = document.getElementById("checkout-btn");
+    
+    let total = 0;
+    // this is the formatting each added item will fall into 
+    cart.forEach((item, index) => {
+      let itemTotal = item.price * item.quantity;
+      let li = document.createElement("li");
+      li.innerHTML = `${item.name} | $${item.price.toFixed(2)} x ${item.quantity} = $${itemTotal.toFixed(2)} |
+      <button class="remove-btn" data-index="${index}">Remove</button>`;
+      cartItems.appendChild(li);
+      total += itemTotal;
+    });
+  // this shows if there are no products inside the cart 
+    if (cart.length === 0) {
+      let li = document.createElement("li");
+      li.textContent = "Your cart is empty.";
+      cartItems.appendChild(li);
+    }
+  
+    cartTotal.textContent = total.toFixed(2);
+  
+    cartItems.addEventListener("click", (e) => {
+      if (e.target.classList.contains("remove-btn")) {
+        let index = parseInt(e.target.dataset.index);
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        location.reload();
+      }
+    });
+    
+    checkoutBtn.addEventListener("click", () => {
+      // add code to take user to checkout page
+      
+      localStorage.removeItem("cart");
+      location.reload();
+    });
+  </script>
+</body>
+</html>
